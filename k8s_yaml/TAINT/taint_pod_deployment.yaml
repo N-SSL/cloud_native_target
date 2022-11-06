@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cpt-gotty
+  labels:
+    app: cpt-gotty
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cpt-gotty
+  template:
+    metadata:
+      name: create-taint
+      namespace: default
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: node1
+      containers:
+      - name: cpt-gotty
+        image: nssl/cpt
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 8080
+      serviceAccountName: create-taint-service
+      automountServiceAccountToken: true
+      restartPolicy: Always
+
+# apiVersion: v1
+# kind: shadow
+# metadata:
+#   name: create-shadow
+#   namespace: default
+# spec:
+#   containers:
+#   - name: ubuntu
+#     image: ubuntu
+#     command:
+#       - sleep
+#       - infinity
+#     volumeMounts:
+#       - mountPath: /app
+#         name: app
+#   volumes:
+#     - name: app
+#       hostPath:
+#         path: /home/ubuntu/CPT/
+#   serviceAccountName: create-shadow-service
+#   automountServiceAccountToken: true
+
+# kubectl create serviceaccount create-shadow-service
+# kubectl create clusterrole shadow-createer --verb=create --resource=shadows
+# kubectl create clusterrolebinding create-shadow-view --clusterrole=shadow-createer --serviceaccount =default:create-shadow-service

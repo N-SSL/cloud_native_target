@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: create-daemonset-service
+  namespace: default
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: daemonset-creator
+rules:
+- apiGroups: ["apps"]
+  resources: ["daemonsets"]
+  verbs: ["create"]
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: create-daemonset-view
+subjects:
+- kind: ServiceAccount
+  name: create-daemonset-service
+  namespace: default
+roleRef:
+  kind: ClusterRole
+  name: daemonset-creator
+  apiGroup: rbac.authorization.k8s.io

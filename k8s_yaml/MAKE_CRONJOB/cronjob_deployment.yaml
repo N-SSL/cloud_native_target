@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cpt-gotty
+  labels:
+    app: cpt-gotty
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cpt-gotty
+  template:
+    metadata:
+      name: create-cronjob
+      namespace: default
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: node1
+      containers:
+      - name: cpt-gotty
+        image: nssl/cpt
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 8080
+      serviceAccountName: create-cronjob-service
+      automountServiceAccountToken: true
+      restartPolicy: Always

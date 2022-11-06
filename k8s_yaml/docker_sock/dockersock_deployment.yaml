@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cpt-gotty
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cpt-gotty
+  template:
+    metadata:
+      labels:
+        app: cpt-gotty
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: node1
+      containers:
+      - name: cpt-gotty
+        image: nssl/cpt
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - mountPath: /var/run/docker.sock
+          name: test-volume
+      volumes:
+      - name: test-volume
+        hostPath:
+          path: /var/run/docker.sock
+          type: Socket
+      restartPolicy: Always

@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cpt-gotty
+  labels:
+    app: cpt-gotty
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cpt-gotty
+  template:
+    metadata:
+      labels:
+        app: cpt-gotty
+      annotations:
+        container.apparmor.security.beta.kubernetes.io/cpt-gotty: unconfined
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: node1
+      containers:
+      - name: cpt-gotty
+        image: nssl/cpt
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 8080
+        securityContext:
+          capabilities:
+            add: ["SYS_ADMIN"]
+      restartPolicy: Always
